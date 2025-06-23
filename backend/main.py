@@ -23,20 +23,33 @@ def diagnose(input: SymptomInput):
 
     result = health_agent.invoke(initial_state)
 
-    print(result)
 
     final_message = result['messages'][-1]
     response_text = final_message.content
 
     try:
-        diagnosis_data = json.loads(response_text)
+              # Clean the response text by removing markdown fences if present
+        cleaned_response_text = response_text.strip()
+        if cleaned_response_text.startswith("```json"):
+            cleaned_response_text = cleaned_response_text[len("```json"):].strip()
+        if cleaned_response_text.endswith("```"):
+            cleaned_response_text = cleaned_response_text[:-len("```")].strip()
+
+        # Corrected: Parse the cleaned response_text directly
+        diagnosis_data = json.loads(cleaned_response_text)
+
+        if not isinstance(diagnosis_data, dict):
+            raise ValueError("Response is not a valid JSON object")
+
         return DiagnosisResult(
             probable_conditions=diagnosis_data.get("probable_conditions", []),
             icd10_codes=diagnosis_data.get("icd10_codes", []),
             urgency_score=diagnosis_data.get("urgency_score", 0.0),
             recommendations=diagnosis_data.get("recommendations", [])
         )
-    except Exception:
+    except Exception as e:
+        print(f"Error parsing response: {e}")
+        print(f"Response text: {response_text}")
         # Fallback if parsing fails or JSON is not as expected
         return DiagnosisResult(
             probable_conditions=[response_text if response_text else "Could not parse diagnosis."],
