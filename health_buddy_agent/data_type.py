@@ -1,7 +1,6 @@
 from typing_extensions import Annotated
 from pydantic import BaseModel
 from typing import List, Optional, TypedDict
-from langgraph.graph.message import add_messages
 
 
 
@@ -15,5 +14,4 @@ class DiagnosisResult(BaseModel):
     urgency_score: float
     recommendations: List[str]
 
-class AgentState(TypedDict):
-    messages: Annotated[list, add_messages]
+
