@@ -1,11 +1,17 @@
 
 from fastapi import FastAPI, UploadFile, File
 from data_type import DiagnosisResult, SymptomInput
-from health_buddy_agent.agent import compiled_workflow
+# from health_buddy_agent.agent import compiled_workflow
+from utils.tools import icd10_search_tool
 
 
 
 app = FastAPI(title="HealthBuddy AI Symptom Checker")
+
+
+@app.post("/testicd10")
+def test_icd10(search_term: str):
+    return icd10_search_tool(search_term)
 
 
 

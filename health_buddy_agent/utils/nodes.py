@@ -5,7 +5,7 @@ from langgraph.prebuilt import ToolNode
 
 
 from health_buddy_agent.utils import tools
-from health_buddy_agent.utils.tools import icd10_search_tool, recommendation_tool, urgency_scorer
+from health_buddy_agent.utils.tools import icd10_search_tool
 from health_buddy_agent.utils.state import AgentState
 import os
 
@@ -21,7 +21,7 @@ def _get_model_name(model_name: str):
     else:
         raise ValueError(f"Unsupported model name: {model_name}")
     
-    model = model.bind_tools([icd10_search_tool, recommendation_tool, urgency_scorer])
+    model = model.bind_tools([icd10_search_tool])
 
     return model
 
@@ -46,4 +46,4 @@ def call_llm(state: AgentState, config):
 
 
 
-tool_node = ToolNode([icd10_search_tool, recommendation_tool, urgency_scorer])
+tool_node = ToolNode([icd10_search_tool])

@@ -1,5 +1,9 @@
-from langchain_core.tools import tool
+import requests
+import logging
 
+# Set up logging for 'requests'
+logging.basicConfig(level=logging.DEBUG)
+logging.getLogger('urllib3').setLevel(logging.DEBUG)
 
 def icd10_search_tool(query: str) -> str:
     """
@@ -8,22 +12,23 @@ def icd10_search_tool(query: str) -> str:
     """
     # Placeholder for actual ICD-10 search logic
     # In a real implementation, this would query an ICD-10 database or API
-    return f"ICD-10 codes for '{query}': [A00, A01, A02]"
+    url = "https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search"
+    params = {
+        "terms": query,
+        "sf": "name",
+        "df": "code",
+    }
 
-def recommendation_tool(symptoms: str) -> str:
-    """
-    Generate recommendations based on the provided symptoms.
-    Returns a string with the recommendations.
-    """
-    # Placeholder for actual recommendation logic
-    # In a real implementation, this would analyze symptoms and provide tailored advice
-    return f"Recommendations for '{symptoms}': [Rest, Hydration, Over-the-counter medication]"
+    resp = requests.get(url, params=params)
+    resp.raise_for_status()
+    print(resp.json())
+    payload = resp.json()
+    # payload[1] is a list of codes when df="code"
+    codes = payload[1]
 
-def urgency_scorer(symptoms: str) -> float:
-    """
-    Score the urgency of the symptoms on a scale from 0.0 to 1.0.
-    Returns a float representing the urgency score.
-    """
-    # Placeholder for actual urgency scoring logic
-    # In a real implementation, this would analyze symptoms and assign an urgency score
-    return 0.5
+    if not codes:
+        return f"No ICD-10‑CM codes found for '{query}'."
+
+    # Format codes as a Python list literal
+    codes_list = ", ".join(codes)
+    return f"ICD-10 codes for '{query}': [{codes_list}]"
