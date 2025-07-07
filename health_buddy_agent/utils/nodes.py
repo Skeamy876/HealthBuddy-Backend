@@ -5,8 +5,8 @@ from langgraph.prebuilt import ToolNode
 from google.ai.generativelanguage_v1beta.types import Tool as GenAITool
 
 
-from health_buddy_agent.utils.tools import icd10_search_tool
-from health_buddy_agent.utils.state import AgentState
+from utils.tools import icd10_search_tool
+from utils.state import AgentState
 from langchain_core.messages import SystemMessage
 
 import os
