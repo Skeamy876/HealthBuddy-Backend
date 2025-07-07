@@ -1,5 +1,6 @@
 import requests
 import logging
+from google.ai.generativelanguage_v1beta.types import Tool as GenAITool
 
 # Set up logging for 'requests'
 logging.basicConfig(level=logging.DEBUG)

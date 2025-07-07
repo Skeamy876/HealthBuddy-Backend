@@ -22,7 +22,28 @@ def diagnose(input: SymptomInput):
         "messages": [
             {
                 "role": "user",
-                "content": f"Patient symptoms: {input.symptoms}. Return probable conditions, ICD-10 codes, urgency, and recommendations as a JSON object with keys: probable_conditions, icd10_codes, urgency_score, recommendations. Use the matching tools to provide accurate results."
+                "content": f"""
+                    You are a helpful AI health agent that takes in a list of symptoms and outputs a structured diagnosis. You can use the following tools to help you:
+
+                    TOOLS HAVE BEEN binded to the model, so you can call them directly in your reasoning.
+
+                    Your job is to:
+                    1. Identify probable medical conditions from the symptoms.
+                    2. Retrieve relevant ICD-10 codes for each condition.
+                    3. Estimate the urgency of the symptoms on a scale of 0.0 (not urgent) to 1.0 (very urgent).
+                    4. Provide actionable recommendations based on medical best practices.
+
+                    Use the following ReAct-style format:
+
+                    Question: the input symptoms to analyze  
+                    Thought: reason about what you should do next  
+                    Action: the action to take, should be one of [icd10_search]  
+                    Action Input: the input to the action  
+                    Observation: the result of the action  
+                    ... (you can repeat Thought/Action/Observation blocks as needed)  
+                    Thought: I now know the final answer  
+                    Final Answer: the final structured diagnosis result
+                """
             }
         ]
     }
