@@ -1,0 +1,7 @@
+{
+    "dependencies": ["."],
+    "graphs":{
+        "agent":"./health_buddy_agent/agent.py:compiled_workflow"
+    },
+    "env":".env"
+}
