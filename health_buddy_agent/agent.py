@@ -2,9 +2,13 @@
 import os
 from typing import Literal, TypedDict
 from langgraph.graph import StateGraph, END
-from utils.nodes import call_llm, tool_node, should_continue
 
-from utils.state import AgentState
+from health_buddy_agent.utils.nodes import call_llm, tool_node, should_continue
+from health_buddy_agent.utils.state import AgentState
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 
@@ -25,22 +29,29 @@ workflow.add_conditional_edges("agent",should_continue,{
 })
 workflow.add_edge("action", "agent")
 
-# checkpointer = MemorySaver()
-# compiled_workflow = workflow.compile(checkpointer=checkpointer)
-
-is_langgraph_api = (
-    os.environ.get("LANGGRAPH_API", "false").lower() == "true" or
-    os.environ.get("LANGGRAPH_API_DIR") is not None
+from langgraph.checkpoint.memory import MemorySaver
+checkpointer = MemorySaver()
+compiled_workflow = workflow.compile(checkpointer=checkpointer).with_config(
+    {
+        "configurable": {
+            "thread_id": "1",
+        }
+    }
 )
 
-if is_langgraph_api:
-    # When running in LangGraph API/dev, don't use a custom checkpointer
-    compiled_workflow = workflow.compile()
-else:
-    # For CopilotKit and other contexts, use MemorySaver
-    from langgraph.checkpoint.memory import MemorySaver
-    memory = MemorySaver()
-    compiled_workflow = workflow.compile(checkpointer=memory)
+# is_langgraph_api = (
+#     os.environ.get("LANGGRAPH_API", "false").lower() == "true" or
+#     os.environ.get("LANGGRAPH_API_DIR") is not None
+# )
+
+# if is_langgraph_api:
+#     # When running in LangGraph API/dev, don't use a custom checkpointer
+# compiled_workflow = workflow.compile()
+# else:
+#     # For CopilotKit and other contexts, use MemorySaver
+#     from langgraph.checkpoint.memory import MemorySaver
+#     memory = MemorySaver()
+#     compiled_workflow = workflow.compile(checkpointer=memory)
 
 
 
