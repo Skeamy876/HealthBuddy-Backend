@@ -44,7 +44,7 @@ LangChain Agent → Gemini 1.5 Pro
 Recommendations (Text)
    ↓
 Coqui TTS tbd (Voice Output)
-
+```
 ---
 
 ## 🔒 Rate Limiting
@@ -72,7 +72,7 @@ curl -H "x-session-id: your-session-id" http://localhost:8000/
 
 # Without session header (uses IP as fallback)
 curl http://localhost:8000/
-```
+
 
 ### Rate Limit Response
 
