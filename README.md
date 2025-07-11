@@ -44,4 +44,45 @@ LangChain Agent → Gemini 1.5 Pro
 Recommendations (Text)
    ↓
 Coqui TTS tbd (Voice Output)
+```
+---
+
+## 🔒 Rate Limiting
+
+The API includes session-based rate limiting for production environments:
+
+- **Production Environment** (`ENVIRONMENT=Prod` or `ENVIRONMENT=production`): 5 requests per session
+- **Non-Production Environments**: Unlimited requests
+
+### Session Identification
+
+Sessions are identified using:
+1. `session-id` header (recommended)
+2. `x-session-id` header (alternative)
+3. Client IP address (fallback)
+
+### Usage Examples
+
+```bash
+# With session ID (recommended)
+curl -H "session-id: your-session-id" http://localhost:8000/
+
+# Alternative header
+curl -H "x-session-id: your-session-id" http://localhost:8000/
+
+# Without session header (uses IP as fallback)
+curl http://localhost:8000/
+
+
+### Rate Limit Response
+
+When the rate limit is exceeded, the API returns HTTP 429 with:
+
+```json
+{
+  "error": "Rate limit exceeded",
+  "message": "Maximum 5 requests per session allowed in production environment",
+  "session_id": "your-session-id"
+}
+```
 

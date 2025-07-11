@@ -4,12 +4,16 @@ from fastapi import FastAPI, UploadFile, File
 
 from health_buddy_agent.utils.state import AgentState
 from .agent import compiled_workflow
+from .middleware.rate_limit import RateLimitMiddleware
 
 import uvicorn
 from copilotkit.integrations.fastapi import add_fastapi_endpoint
 from copilotkit import CopilotKitRemoteEndpoint, LangGraphAgent
 
 app = FastAPI(title="HealthBuddy AI Symptom Checker")
+
+# Add rate limiting middleware
+app.add_middleware(RateLimitMiddleware)
 
 
  
